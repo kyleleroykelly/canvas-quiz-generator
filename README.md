@@ -1,17 +1,16 @@
-# canvas-quiz-generator
-A Python tool to generate Canvas-compatible QTI quizzes from CSV files.
 # Canvas Quiz Generator
 
-A simple Python tool that converts a CSV file into a Canvas-compatible QTI quiz package (.zip) for easy import into **Canvas Classic Quizzes**.
+A Python tool that converts a CSV file into a Canvas-compatible QTI quiz package (.zip) for easy import into **Canvas Classic Quizzes**.
 
 ---
 
 ## 🚀 Features
-- Generate multiple-choice quizzes from a CSV file.
-- Fully QTI 1.2-compliant package (includes `imsmanifest.xml`).
-- Supports flexible CSV formatting with up to 3 distractors per question.
+- **Auto-detects** CSV files in the current folder.
+- Prompts the user if **multiple CSV files** are found.
+- Generates a QTI-compliant `.zip` ready for Canvas import.
+- ZIP file is automatically named using the CSV filename + `_quiz_` + timestamp.
+- Supports multiple-choice questions with up to 3 distractors.
 - Customizable quiz title and number of attempts.
-- Output is ready-to-import into Canvas (Classic Quizzes).
 
 ---
 
@@ -19,42 +18,67 @@ A simple Python tool that converts a CSV file into a Canvas-compatible QTI quiz 
 
 ### 1️⃣ Prerequisites
 - Python 3.x installed on your system.
-- Basic knowledge of running Python scripts via command line.
+
+---
 
 ### 2️⃣ Prepare Your CSV File
-Use the following format:
+Format your CSV like this:
 
 | Question                  | Correct Answer                                          | Distractor 1     | Distractor 2      | Distractor 3       |
 |---------------------------|----------------------------------------------------------|------------------|-------------------|--------------------|
 | What is AI?               | Systems that perform tasks requiring human intelligence  | Data storage     | Web development   | Computer hardware  |
-| What is Machine Learning? | Systems that learn from data without explicit programming| Manual coding    | Database querying | Internet browsing  |
 
-- **Required Columns:** `Question` and `Correct Answer`
-- Distractors are optional but recommended.
+- Only `Question` and `Correct Answer` columns are required.
+- Place the CSV file in the same folder as the script.
+
+---
 
 ### 3️⃣ Run the Script
+
+If there's one CSV file:
 ```bash
-python generate_canvas_quiz.py --input sample_quiz.csv --title "AI Basics Quiz" --attempts 1
+python generate_canvas_quiz.py --title "Your Quiz Title" --attempts 1
 
-Generating Quiz Questions with AI (ChatGPT)
-You can quickly generate multiple-choice quiz questions using AI tools like ChatGPT and export them in the correct CSV format for this tool.
+If multiple CSV files exist, the script will prompt you to select one.
 
-✨ Suggested Prompt for ChatGPT:
+You can still manually specify a CSV:
 
-Create a set of [NUMBER] multiple-choice questions about **[TOPIC]**.
+python generate_canvas_quiz.py --input yourfile.csv --title "Your Quiz Title" --attempts 1
 
-Format the output as a CSV table with the following columns:
+The generated .zip will appear in the output folder as:
+<csv_filename>_quiz_<timestamp>.zip
 
-Question,Correct Answer,Distractor 1,Distractor 2,Distractor 3
+4️⃣ Import into Canvas
+Go to Settings > Import Course Content in your Canvas course.
 
-- Each question should have ONE correct answer and up to THREE plausible incorrect answers.
-- Leave any unused distractor fields blank.
-- Only output the CSV table—no extra explanations.
-- Example:
+Select QTI .zip file and upload the generated package.
 
-Question,Correct Answer,Distractor 1,Distractor 2,Distractor 3  
-What is AI?,Systems that perform tasks requiring human intelligence,Data storage,Web development,Computer hardware
+Use Classic Quizzes for best compatibility.
 
+🤖 Generate Quiz Questions with AI
+Use ChatGPT to quickly create quizzes in the correct CSV format.
+
+Suggested Prompt:
+Create [NUMBER] multiple-choice questions about [TOPIC].
+Format as CSV with columns: Question, Correct Answer, Distractor 1, Distractor 2, Distractor 3.
+Only output the CSV table.
+
+After generating:
+
+Copy the table into a .csv file.
+
+Save it in the same folder as this script.
+
+Run the script!
+
+🛠️ Roadmap
+ True/False and Short Answer support.
+
+ Batch CSV processing.
+
+ GUI version for easier use.
+
+ Canvas New Quizzes compatibility.
 After Generating:
 Copy the CSV output into a text editor or spreadsheet software.
 
