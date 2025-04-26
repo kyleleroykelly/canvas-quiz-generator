@@ -144,7 +144,8 @@ ET.ElementTree(manifest).write(manifest_xml, encoding="UTF-8", xml_declaration=T
 # --- Zip for Canvas ---
 import datetime
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M")
-zip_path = os.path.join(args.output, f"{args.title.replace(' ', '_')}_{timestamp}.zip")
+csv_name = os.path.splitext(os.path.basename(args.input))[0]
+zip_path = os.path.join(args.output, f"{csv_name}_quiz_{timestamp}.zip")
 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
     zipf.write(assessment_xml, arcname="assessment1.xml")
     zipf.write(manifest_xml, arcname="imsmanifest.xml")
