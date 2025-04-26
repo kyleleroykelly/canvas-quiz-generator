@@ -7,11 +7,31 @@ import argparse
 
 # --- Argument Parser ---
 parser = argparse.ArgumentParser(description="Generate Canvas Quiz from CSV.")
-parser.add_argument('--input', required=True, help='Path to input CSV file')
+parser.add_argument('--input', help='Path to input CSV file')
 parser.add_argument('--title', required=True, help='Quiz title')
 parser.add_argument('--attempts', default='1', help='Max attempts (default: 1)')
 parser.add_argument('--output', default='output', help='Output folder')
 args = parser.parse_args()
+
+# --- Auto-detect CSV if not provided ---
+if not args.input:
+    csv_files = [f for f in os.listdir('.') if f.endswith('.csv')]
+    if not csv_files:
+        print("No CSV files found in the current directory. Please provide a CSV file.")
+        exit(1)
+    elif len(csv_files) == 1:
+        args.input = csv_files[0]
+        print(f"Automatically selected CSV file: {args.input}")
+    else:
+        print("Multiple CSV files found. Please select one:")
+        for idx, file in enumerate(csv_files, 1):
+            print(f"{idx}: {file}")
+        choice = input("Enter the number of the file to use: ")
+        try:
+            args.input = csv_files[int(choice) - 1]
+        except (IndexError, ValueError):
+            print("Invalid selection.")
+            exit(1)
 
 # --- Required Columns ---
 REQUIRED_COLUMNS = ['question', 'correct answer']
@@ -23,7 +43,6 @@ try:
         reader = csv.DictReader(csvfile)
         headers = [h.strip().lower() for h in reader.fieldnames]
 
-        # Validate required columns
         for col in REQUIRED_COLUMNS:
             if col not in headers:
                 raise ValueError(f"Missing required column: '{col}' in CSV header.")
@@ -123,7 +142,9 @@ manifest_xml = os.path.join(args.output, "imsmanifest.xml")
 ET.ElementTree(manifest).write(manifest_xml, encoding="UTF-8", xml_declaration=True)
 
 # --- Zip for Canvas ---
-zip_path = os.path.join(args.output, f"{args.title.replace(' ', '_')}.zip")
+import datetime
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M")
+zip_path = os.path.join(args.output, f"{args.title.replace(' ', '_')}_{timestamp}.zip")
 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
     zipf.write(assessment_xml, arcname="assessment1.xml")
     zipf.write(manifest_xml, arcname="imsmanifest.xml")
